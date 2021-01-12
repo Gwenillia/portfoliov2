@@ -1,6 +1,6 @@
 {
   "name": "portfolio-gwen",
-  "version": "2.0.1",
+  "version": "2.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,8 @@
     "build:prod": "npm run clear:build && NODE_ENV=production grunt",
     "test": "echo \"Error: no test specified\" && exit 1",
     "release": "standard-version",
-    "clear:build": "rimraf dist"
+    "clear:build": "rimraf dist",
+    "commit": "git-cz"
   },
   "author": "Gwen Tripet-Costet",
   "license": "ISC",
@@ -21,6 +22,8 @@
     "@babel/preset-env": "^7.12.11",
     "@babel/preset-typescript": "^7.12.7",
     "babel-preset-minify": "^0.5.1",
+    "commitizen": "^4.2.2",
+    "cz-conventional-changelog": "^3.3.0",
     "grunt": "^1.3.0",
     "grunt-babel": "^8.0.0",
     "grunt-browser-sync": "^2.2.0",
@@ -34,5 +37,10 @@
     "rimraf": "^3.0.2",
     "standard-version": "^9.1.0",
     "typescript": "^4.1.3"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
