@@ -1,0 +1,1 @@
+faire un lien en footer qui renvoit vers une page montrant les couleurs utiliser sur le site (un peu comme discord font sur leur site)

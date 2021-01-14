@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;600&display=swap')
+html
+  font-size: 62.5%
+  body
+    font-family: 'Titillium web', sans-serif
+    font-size: 1.6rem
+    color: $neutralBlack
+    background-color: $neutralWhite
+    a
+      color: $linkColor
+      &:hover
+        color: $linkHoverColor
+    p, ul, ol
+      @include font-size($p-font-sizes)
+    h1
+      @include font-size($h1-font-size)

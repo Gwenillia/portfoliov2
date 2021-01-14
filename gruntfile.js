@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 module.exports = (grunt) => {
   grunt.initConfig({
     // pug task
@@ -12,8 +13,15 @@ module.exports = (grunt) => {
         files: [
           {
             src: '[^_]*.pug',
-            cwd: 'src/pug/',
+            cwd: 'src/pug',
             dest: 'dist',
+            expand: true,
+            ext: '.html',
+          },
+          {
+            src: '[^_]*.pug',
+            cwd: 'src/pug/pages',
+            dest: 'dist/pages',
             expand: true,
             ext: '.html',
           },
@@ -26,12 +34,24 @@ module.exports = (grunt) => {
       default: {
         tsconfig: './tsconfig.json',
       },
+      dist: {
+        files: [
+          {
+            src: '[^_]*.ts',
+            cwd: 'src/ts',
+            dest: 'dist/js',
+            expand: true,
+            ext: '.js',
+          },
+        ],
+      },
     },
 
     // sass task
     sass: {
       dist: {
         options: {
+          // eslint-disable-next-line global-require
           implementation: require('sass'),
           style: 'inline',
         },
@@ -71,22 +91,7 @@ module.exports = (grunt) => {
             expand: true,
             cwd: 'src/',
             src: ['images/**/*.{png,jpg,gif}'],
-            dest: 'dist',
-          },
-        ],
-      },
-    },
-
-    //minify css (only tun in production)
-    cssmin: {
-      target: {
-        files: [
-          {
-            expand: true,
-            cwd: 'dist/css',
-            src: ['*.css', '!*.min.css'],
-            dest: 'dist/css',
-            ext: '.css',
+            dest: 'dist/assets/images/',
           },
         ],
       },
@@ -102,6 +107,28 @@ module.exports = (grunt) => {
           watchTask: true,
           server: './dist',
         },
+      },
+    },
+
+    // postcss tasks
+    postcss: {
+      options: {
+        map: {
+          inline: false,
+          annotation: 'dist/css/maps/',
+        },
+        processors: [require('autoprefixer'), require('cssnano')()],
+      },
+      dist: {
+        files: [
+          {
+            src: '[^_]*.css',
+            cwd: 'dist/css/',
+            dest: 'dist/css',
+            expand: true,
+            ext: '.css',
+          },
+        ],
       },
     },
 
@@ -123,6 +150,10 @@ module.exports = (grunt) => {
         files: ['src/js/**/*.js'],
         tasks: ['babel'],
       },
+      ts: {
+        files: ['src/ts/**/*.ts'],
+        tasks: ['ts'],
+      },
       copy: {
         files: ['src/libraries/**', 'src/public/**'],
         tasks: ['copy'],
@@ -140,7 +171,7 @@ module.exports = (grunt) => {
       },
       dist: {
         files: {
-          'dist/js/app.js': 'src/js/app.js',
+          'dist/js/app-babel.js': 'dist/js/app.js',
         },
       },
     },
@@ -149,27 +180,35 @@ module.exports = (grunt) => {
   // initial
   grunt.loadNpmTasks('grunt-contrib-pug');
   grunt.loadNpmTasks('grunt-sass');
+  grunt.loadNpmTasks('grunt-ts');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-browser-sync');
   grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-postcss');
   grunt.loadNpmTasks('grunt-contrib-imagemin');
-  grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-babel');
-  grunt.loadNpmTasks('grunt-ts');
 
-  //register default task
-  if (process.env.NODE_ENV == 'production') {
-    grunt.registerTask('default', ['pug', 'sass', 'copy', 'imagemin', 'cssmin', 'babel', 'ts']);
+  // register default task
+  if (process.env.NODE_ENV === 'production') {
+    grunt.registerTask('default', [
+      'pug',
+      'sass',
+      'ts',
+      'copy',
+      'imagemin',
+      'postcss',
+      'babel',
+    ]);
   } else {
     grunt.registerTask('default', [
       'pug',
       'sass',
+      'ts',
       'copy',
       'imagemin',
       'browserSync',
       'babel',
       'watch',
-      'ts',
     ]);
   }
 };
